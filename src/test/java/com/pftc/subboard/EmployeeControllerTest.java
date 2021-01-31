@@ -44,7 +44,7 @@ public class EmployeeControllerTest {
         doReturn(Optional.empty()).when(employeeRepositoryMock).findById(anyLong());
 
         // Perform thes test
-        assertThrows(EmployeeNotFoundException.class, () -> employeeController.one(5L));        
+        assertThrows(NullPointerException.class, () -> employeeController.one(5L));        
     }
 
 }
