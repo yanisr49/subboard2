@@ -2,7 +2,6 @@ package com.pftc.subboard;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +22,12 @@ class EmployeeController {
 
   // Aggregate root
   // tag::get-aggregate-root[]
-  @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping("/employees")
   List<Employee> all() {
     return repository.findAll();
   }
   // end::get-aggregate-root[]
 
-  @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/employees")
   Employee newEmployee(@RequestBody Employee newEmployee) {
     return repository.save(newEmployee);
@@ -38,7 +35,6 @@ class EmployeeController {
 
   // Single item
 
-  @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping("/employees/{id}")
   Employee one(@PathVariable Long id) {
 
