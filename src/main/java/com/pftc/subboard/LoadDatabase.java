@@ -1,5 +1,8 @@
 package com.pftc.subboard;
 
+import com.pftc.subboard.user.User;
+import com.pftc.subboard.user.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -12,11 +15,11 @@ class LoadDatabase {
   private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
   @Bean
-  CommandLineRunner initDatabase(EmployeeRepository repository) {
+  CommandLineRunner initDatabase(UserRepository repository) {
 
     return args -> {
-      log.info("Preloading " + repository.save(new Employee("Bilbo Baggins", "burglar")));
-      log.info("Preloading " + repository.save(new Employee("Frodo Baggins", "thief")));
+      log.info("Preloading " + repository.save(new User("John doe", "azerty")));
+      log.info("Preloading " + repository.save(new User("root", "root")));
     };
   }
 }

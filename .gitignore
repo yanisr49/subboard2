@@ -39,3 +39,4 @@ build/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+src/main/app/.eslintcache
