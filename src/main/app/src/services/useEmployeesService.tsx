@@ -12,7 +12,7 @@ const usePostEmployeeService = () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/employees')
+    fetch('http://localhost:8080/user')
       .then(response => response.json())
       .then(response => setResult({ status: 'loaded', payload: { results: response }}))
       .catch(error => setResult({ status: 'error', error }));
