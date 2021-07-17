@@ -2,8 +2,7 @@ import React, { FC } from "react";
 import {
   BrowserRouter,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import ComponentList from "./components/ComponentList";
 
