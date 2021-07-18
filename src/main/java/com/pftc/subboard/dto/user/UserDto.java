@@ -43,8 +43,8 @@ public class UserDto extends Dto<User> {
     public User toModel() {
         User user = super.toModel();
 
-        Set<Role> roles = rolesDto.stream().map(roleDto -> roleDto.toModel()).collect(Collectors.toSet());
-        Set<Subscription> subscriptions = subscriptionsDto.stream().map(subscriptionDto -> subscriptionDto.toModel()).collect(Collectors.toSet());
+        Set<Role> roles = rolesDto.stream().map(RoleDto::toModel).collect(Collectors.toSet());
+        Set<Subscription> subscriptions = subscriptionsDto.stream().map(SubscriptionDto::toModel).collect(Collectors.toSet());
 
         user.setId(id);
         user.setUsername(username);

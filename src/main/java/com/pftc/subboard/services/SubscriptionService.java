@@ -30,7 +30,7 @@ public class SubscriptionService {
     public List<SubscriptionDto> getAllSubscriptionByUser(Long userId) {
         User user = userRepository.getOne(userId);
         List<Subscription> subscriptions = subscriptionRepository.findByUser(user);
-        List<SubscriptionDto> subscriptionsDto = subscriptions.stream().map(subscription -> subscription.toDto()).collect(Collectors.toList());
+        List<SubscriptionDto> subscriptionsDto = subscriptions.stream().map(Subscription::toDto).collect(Collectors.toList());
 
         return subscriptionsDto;
     }
@@ -68,7 +68,7 @@ public class SubscriptionService {
     public SubscriptionDto updateSubscription(SubscriptionDto subscriptionDto, Long userId, Long subscriptionId) {
         // Subscription's id can't be null or 0
         if(subscriptionId == null || subscriptionId <= 0) {
-            throw new IllegalArgumentException("Id must be defined");
+            throw new IllegalArgumentException("Subscription id must be defined");
         } else {
             subscriptionDto.setId(subscriptionId);
         }
@@ -91,10 +91,6 @@ public class SubscriptionService {
      * @param subscriptionId Subscription's id
      */
     public void deleteSubscription(Long userId, Long subscriptionId) {
-        // User's id can't be null or 0
-        if(userId == null || userId <= 0) {
-            throw new IllegalArgumentException("User id must be defined");
-        }
         // Subscription's id can't be null or 0
         if(subscriptionId == null || subscriptionId <= 0) {
             throw new IllegalArgumentException("Subscription id must be defined");

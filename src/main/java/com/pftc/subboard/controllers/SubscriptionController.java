@@ -48,7 +48,7 @@ public class SubscriptionController {
 	/**
 	 * Create a subscription to a user.
 	 * 
-	 * @param subscriptionDto Subscriptionto create
+	 * @param subscriptionDto Subscription to create
 	 * @param userId User's id
 	 * @return Subscription created
 	 */
