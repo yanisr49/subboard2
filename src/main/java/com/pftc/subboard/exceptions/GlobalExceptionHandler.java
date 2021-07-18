@@ -17,12 +17,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public final ResponseEntity<ExceptionResponse> handleException(IllegalArgumentException e, WebRequest request) {
         logger.debug("IllegalArgumentException", e.getCause());
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage(), IllegalArgumentException.class));
+
+        String uri = request.getDescription(false).split("=")[1];
+        return ResponseEntity.badRequest().body(new ExceptionResponse(400, "Bad Request", IllegalArgumentException.class, e.getMessage(), uri));
     }  
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public final ResponseEntity<ExceptionResponse> handleException(UserAlreadyExistsException e, WebRequest request) {
         logger.debug("UserAlreadyExistsException", e.getCause());
-        return ResponseEntity.badRequest().body(new ExceptionResponse("User already exists !", UserAlreadyExistsException.class));
+        
+        String uri = request.getDescription(false).split("=")[1];
+        return ResponseEntity.badRequest().body(new ExceptionResponse(400, "Bad Request", UserAlreadyExistsException.class, "User already exists !",uri));
     }
 }

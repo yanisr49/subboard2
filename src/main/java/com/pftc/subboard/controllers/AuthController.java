@@ -1,7 +1,7 @@
 package com.pftc.subboard.controllers;
 
+import com.pftc.subboard.dto.user.UserDto;
 import com.pftc.subboard.payload.request.LoginRequest;
-import com.pftc.subboard.payload.request.SignupRequest;
 import com.pftc.subboard.payload.response.JwtResponse;
 import com.pftc.subboard.payload.response.Response;
 import com.pftc.subboard.services.AuthService;
@@ -30,9 +30,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<Response> registerUser(@RequestBody SignupRequest signUpRequest) {
-        signUpRequest.validate();
+	public ResponseEntity<Response> registerUser(@RequestBody UserDto userDto) {
+        userDto.validate();
 
-		return ResponseEntity.ok(authService.signup(signUpRequest));
+		return ResponseEntity.ok(authService.signup(userDto));
 	}
 }

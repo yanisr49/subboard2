@@ -5,10 +5,9 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pftc.subboard.dto.user.UserDto;
 import com.pftc.subboard.exceptions.UserAlreadyExistsException;
 import com.pftc.subboard.payload.request.LoginRequest;
-import com.pftc.subboard.payload.request.SignupRequest;
-import com.pftc.subboard.payload.response.ExceptionResponse;
 import com.pftc.subboard.payload.response.JwtResponse;
 import com.pftc.subboard.payload.response.Response;
 import com.pftc.subboard.security.jwt.AuthEntryPointJwt;
@@ -54,7 +53,6 @@ public class AuthControllerTest {
     void givenWrongUsername_whenSignin_thenReturn400(String username) throws Exception {
         // Given
         LoginRequest loginRequest = new LoginRequest(username, "password");
-        ExceptionResponse exceptionResponse = new ExceptionResponse("Username must be defined", IllegalArgumentException.class);
 
         // Then
         mockMvc.perform(
@@ -64,7 +62,11 @@ public class AuthControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(exceptionResponse)));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Bad Request"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionClass").value("java.lang.IllegalArgumentException"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Username must be defined"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.path").value("/auth/signin"));
     }
 
     @ParameterizedTest
@@ -73,7 +75,6 @@ public class AuthControllerTest {
     void givenWrongPassword_whenSignin_thenReturn400(String password) throws Exception {
         // Given
         LoginRequest loginRequest = new LoginRequest("username", password);
-        ExceptionResponse exceptionResponse = new ExceptionResponse("Password must be defined", IllegalArgumentException.class);
 
         // Then
         mockMvc.perform(
@@ -83,7 +84,11 @@ public class AuthControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(exceptionResponse)));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Bad Request"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionClass").value("java.lang.IllegalArgumentException"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Password must be defined"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.path").value("/auth/signin"));
     }
 
     @Test
@@ -116,38 +121,44 @@ public class AuthControllerTest {
     @ValueSource(strings = {" ", "\t", "\n"})
     void givenWrongUsername_whenSignup_thenReturn400(String username) throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest(username, "password");
-        ExceptionResponse exceptionResponse = new ExceptionResponse("Username must be defined", IllegalArgumentException.class);
+        UserDto userDto = new UserDto(null, username, "password", null, null);
 
         // Then
         mockMvc.perform(
             MockMvcRequestBuilders
             .post("/auth/signup")
-            .content(objectMapper.writeValueAsString(signupRequest))
+            .content(objectMapper.writeValueAsString(userDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(exceptionResponse)));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Bad Request"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionClass").value("java.lang.IllegalArgumentException"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Username must be defined"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.path").value("/auth/signup"));
     }
 
     @Test
     void givenAlreadyUsedUsername_whenSignup_thenReturn400() throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest("username", "password");
-        ExceptionResponse exceptionResponse = new ExceptionResponse("User already exists !", UserAlreadyExistsException.class);
+        UserDto userDto = new UserDto(null, "username", "password", null, null);
 
         // When
-        when(authService.signup(signupRequest)).thenThrow(UserAlreadyExistsException.class);
+        when(authService.signup(userDto)).thenThrow(UserAlreadyExistsException.class);
 
         // Then
         mockMvc.perform(
             MockMvcRequestBuilders
             .post("/auth/signup")
-            .content(objectMapper.writeValueAsString(signupRequest))
+            .content(objectMapper.writeValueAsString(userDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(exceptionResponse)));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Bad Request"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionClass").value("com.pftc.subboard.exceptions.UserAlreadyExistsException"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User already exists !"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.path").value("/auth/signup"));
     }
 
     @ParameterizedTest
@@ -155,37 +166,39 @@ public class AuthControllerTest {
     @ValueSource(strings = {" ", "\t", "\n"})
     void givenWrongPassword_whenSignup_thenReturn400(String password) throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest("username", password);
-        ExceptionResponse exceptionResponse = new ExceptionResponse("Password must be defined", IllegalArgumentException.class);
+        UserDto userDto = new UserDto(null, "username", password, null, null);
 
         // Then
         mockMvc.perform(
             MockMvcRequestBuilders
             .post("/auth/signup")
-            .content(objectMapper.writeValueAsString(signupRequest))
+            .content(objectMapper.writeValueAsString(userDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(exceptionResponse)));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Bad Request"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionClass").value("java.lang.IllegalArgumentException"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Password must be defined"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.path").value("/auth/signup"));
     }
     
     @Test
     void givenValidData_whenSignup_thenReturn200() throws Exception {
         // Given
-        SignupRequest signupRequest = new SignupRequest("username", "password");
-        Response response = new Response("User registered successfully!");
+        UserDto userDto = new UserDto(null, "username", "password", null, null);
+        Response response = new Response();
 
         // When
-        when(authService.signup(signupRequest)).thenReturn(response);
+        when(authService.signup(userDto)).thenReturn(response);
 
         // Then
         mockMvc.perform(
             MockMvcRequestBuilders
             .post("/auth/signup")
-            .content(objectMapper.writeValueAsString(signupRequest))
+            .content(objectMapper.writeValueAsString(userDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User registered successfully!"));
+            .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

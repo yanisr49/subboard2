@@ -3,11 +3,11 @@ package com.pftc.subboard.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.pftc.subboard.dto.user.UserDto;
 import com.pftc.subboard.exceptions.UserAlreadyExistsException;
 import com.pftc.subboard.models.role.ERole;
 import com.pftc.subboard.models.user.User;
 import com.pftc.subboard.payload.request.LoginRequest;
-import com.pftc.subboard.payload.request.SignupRequest;
 import com.pftc.subboard.payload.response.JwtResponse;
 import com.pftc.subboard.payload.response.Response;
 import com.pftc.subboard.repositories.RoleRepository;
@@ -55,19 +55,19 @@ public class AuthService {
         return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles);
     }
 
-    public Response signup(SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+    public Response signup(UserDto userDto) {
+        if (userRepository.existsByUsername(userDto.getUsername())) {
             throw new UserAlreadyExistsException();
         }
 
         // Create new user's account
-        User user = new User(signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
+        User user = new User(userDto.getUsername(), encoder.encode(userDto.getPassword()));
         user.addRole(roleRepository.findByName(ERole.ROLE_USER).get());
 
         // Save the user
         userRepository.save(user);
 
-        return new Response("User registered successfully!");
+        return new Response();
     }
 
 }
